@@ -31,7 +31,8 @@ All services run as separate Docker containers using Docker Compose.
 ├── frontend/
 ├── backend/
 ├── docker-compose.yml
-├── Jenkinsfile
+├── database.sql
+├── jenk
 └── README.md
 ```
 
