@@ -44,7 +44,7 @@ Make sure you have installed:
 * Docker
 * Docker Compose
 * Git
-
+* EC2 Server (t2.large because we run jenkins, docker, docker compose on same server)
 ---
 
 ## Run Project Locally (Without Jenkins)
