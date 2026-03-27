@@ -49,20 +49,20 @@ Make sure you have installed:
 
 ## Run Project Locally (Without Jenkins)
 
-### 1️Clone Repository
+### 1️. Clone Repository
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/hassanali820/Prod-crud-app/
+cd Prod-crud-app
 ```
 
-### 2️Build and Start Containers
+### 2️. Build and Start Containers
 
 ```bash
 docker compose up -d --build
 ```
 
-### 3️Access Application
+### 3️. Access Application
 
 Frontend:
 
@@ -109,13 +109,13 @@ The project uses Jenkins Declarative Pipeline.
 Frontend:
 
 ```
-yourdockerhub/react-app:latest
+hassanmehmood820/crud-app-frontend:latest
 ```
 
 Backend:
 
 ```
-yourdockerhub/node-app:latest
+hassanmehmood820/crud-app-backend:latest
 ```
 
 ---
