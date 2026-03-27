@@ -1,0 +1,93 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_USER = 'hassanmehmood820'
+        APP_VERSION = "1.0.${env.BUILD_NUMBER}"
+        // Removed DEPLOY_PATH to avoid permission issues
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/hassanali820/crud-app.git'
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    sh """
+                        docker build -t ${DOCKERHUB_USER}/crud-app-frontend:${APP_VERSION} ./frontend
+                        docker build -t ${DOCKERHUB_USER}/crud-app-backend:${APP_VERSION} ./backend
+                    """
+                }
+            }
+        }
+
+        stage('Tag Images as Latest') {
+            steps {
+                script {
+                    sh """
+                        docker tag ${DOCKERHUB_USER}/crud-app-frontend:${APP_VERSION} ${DOCKERHUB_USER}/crud-app-frontend:latest
+                        docker tag ${DOCKERHUB_USER}/crud-app-backend:${APP_VERSION} ${DOCKERHUB_USER}/crud-app-backend:latest
+                    """
+                }
+            }
+        }
+
+        stage('Login to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub_cred',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                }
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                script {
+                    sh """
+                        docker push ${DOCKERHUB_USER}/crud-app-frontend:${APP_VERSION}
+                        docker push ${DOCKERHUB_USER}/crud-app-frontend:latest
+                        docker push ${DOCKERHUB_USER}/crud-app-backend:${APP_VERSION}
+                        docker push ${DOCKERHUB_USER}/crud-app-backend:latest
+                    """
+                }
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                script {
+                    // We stay in the current workspace where the code was checked out
+                    sh """
+                        docker compose pull
+                        docker compose up -d --remove-orphans
+                    """
+                }
+            }
+        }
+
+        stage('Cleanup Old Images') {
+            steps {
+                script {
+                    sh "docker image prune -f"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Build #${env.BUILD_NUMBER} deployed successfully!"
+        }
+        failure {
+            echo "Build failed. Check logs."
+        }
+    }
+}
