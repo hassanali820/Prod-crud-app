@@ -105,8 +105,8 @@ function App() {
   return (
     <div className="app-container">
       <header className="header">
-        <h1>User Management Basic Three Tier App with Jenkins CICD</h1>
-        <p>Made by Hassan Mehmood</p>
+        <h1>User Management Basic Three Tier App with Jenkins CICD +</h1>
+        <p>Made by Hassan Mehmood DevOps</p>
       </header>
 
       <main className="main-content">
